@@ -15,4 +15,12 @@ public interface PoemRepository extends ElasticsearchRepository<Poem,Long>
     Page<Poem> findByTitleLikeOrContentLike(String title, String content, Pageable pageable);
 
     Page<Poem> findByContentLike(String content,Pageable pageable);
+
+    /**
+     * 根据content来删除仓库数据
+     *
+     * @param poem
+     */
+    void delete(Poem poem);
+
 }

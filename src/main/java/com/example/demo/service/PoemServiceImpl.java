@@ -36,4 +36,14 @@ public class PoemServiceImpl implements PoemService{
     public Page<Poem> findAll(Pageable pageable) {
         return poemRepository.findAll(pageable);
     }
+
+    /**
+     * 根据content来删除仓库数据
+     * @param poem
+     * @return
+     */
+    @Override
+    public void delete(Poem poem) {
+       poemRepository.delete(poem);
+    }
 }

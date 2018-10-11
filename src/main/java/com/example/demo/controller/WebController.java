@@ -8,8 +8,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,5 +79,36 @@ public class WebController
 		return "/list";
 
 	}
+
+	@RequestMapping("/delete")
+	public @ResponseBody String deletePormByContent()
+    {
+        Pageable pageable = new PageRequest(0, 10);
+        Page<Poem> poems = poemService.search("香", pageable);
+        for (Poem p : poems)
+        {
+            poemService.delete(p);
+        }
+        return "SUCCESS";
+    }
+
+    /**
+     * 更新elasticsearch仓库里面的数据
+     *
+     * @return
+     */
+    @RequestMapping("/update")
+    public @ResponseBody String update()
+    {
+        Pageable pageable = new PageRequest(0, 10);
+        Page<Poem> poems = poemService.search("清歌", pageable);
+        for (Poem p : poems)
+        {
+            p.setTitle("一首好诗");
+            poemService.save(p);
+        }
+
+        return "SUCCESS";
+    }
 
 }

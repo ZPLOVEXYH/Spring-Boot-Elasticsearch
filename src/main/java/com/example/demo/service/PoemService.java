@@ -21,4 +21,11 @@ public interface PoemService {
 
    //返回所有数据集合
    Page<Poem> findAll(Pageable pageable);
+
+    /**
+     * 根据content来删除仓库数据
+     * @param poem
+     * @return
+     */
+   void delete(Poem poem);
 }
