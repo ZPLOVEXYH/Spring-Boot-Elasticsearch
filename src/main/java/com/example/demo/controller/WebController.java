@@ -1,7 +1,14 @@
 package com.example.demo.controller;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.example.demo.entity.Poem;
+import com.example.demo.entity.VueJs;
+import com.example.demo.repository.VueJsRepository;
 import com.example.demo.service.PoemServiceImpl;
+import org.apache.catalina.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by linziyu on 2018/5/19. 控制层
@@ -27,6 +35,8 @@ public class WebController
 	@Autowired
 	private PoemServiceImpl poemService;
 
+	Logger logger =  LoggerFactory.getLogger(WebController.class);
+
 	@RequestMapping("/")
 	public String index()
 	{
@@ -35,6 +45,7 @@ public class WebController
 		poems.add(new Poem(5, "卜算子·不是爱风尘", "不是爱风尘，似被前缘误。花落花开自有时，总赖东君主。\n" + "去也终须去，住也如何住！若得山花插满头，莫问奴归处"));
 		poems.add(new Poem(6, "御街行·秋日怀旧", "纷纷坠叶飘香砌。夜寂静，寒声碎。真珠帘卷玉楼空，天淡银河垂地。年年今夜，月华如练，长是人千里。"));
 
+		logger.info("elasticsearch ======" + poems);
 		for (int i = 0; i < poems.size(); i++)
 		{
 			poemService.save(poems.get(i));
@@ -110,5 +121,37 @@ public class WebController
 
         return "SUCCESS";
     }
+
+    @Autowired
+	VueJsRepository vueJsRepository;
+
+    /**
+     * 更新elasticsearch仓库里面的数据
+     *
+     * @return
+     */
+    @RequestMapping("/test-vue")
+    public @ResponseBody List<Object> testVue(String message,
+										@RequestParam(value = "pageIndex", required = false, defaultValue = "0") int pageIndex,
+										@RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize)
+    {
+		Pageable pageable = new PageRequest(pageIndex, pageSize);
+		Page<VueJs> vueJs = vueJsRepository.findByMessageLike(message, pageable);
+		List<Object> messageList = vueJs.stream().map(x -> {
+			String msg = x.getMessage().replace("/\"", "\"");
+			int startIdx = msg.indexOf("{");
+
+			return JSONArray.parseObject(msg.substring(startIdx, msg.length()));
+		}).collect(Collectors.toList());
+
+
+        return messageList;
+    }
+
+	public static void main(String[] args) {
+		String message = "vue-log,前端请求过来的数据vue.js logs{\\\"fullPath\\\":\\\"/admin/warehouse/international\\\",\\\"feature\\\":\\\"KABUTAKE_ROUTER_DONE\\\",\\\"title\\\":\\\"访问的页面在那美克星上\\\",\\\"ua\\\":\\\"Mozilla/5.0 (Windows NT 10.0; WOW64; rv:66.0) Gecko/20100101 Firefox/66.0\\\",\\\"user\\\":\\\"admin\\\"}";
+		int i = message.indexOf("{");
+		System.out.println(message.substring(i, message.length()));
+	}
 
 }

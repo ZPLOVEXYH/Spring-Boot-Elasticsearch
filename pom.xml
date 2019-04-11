@@ -28,7 +28,19 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-elasticsearch</artifactId>
+			<!--<exclusions>
+				<exclusion>
+					<groupId>org.springframework.data</groupId>
+					<artifactId>spring-data-elasticsearch</artifactId>
+				</exclusion>
+			</exclusions>-->
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.springframework.data/spring-data-elasticsearch -->
+		<!--<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-elasticsearch</artifactId>
+			<version>3.1.6.RELEASE</version>
+		</dependency>-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
@@ -44,11 +56,25 @@
 			<scope>test</scope>
 		</dependency>
 
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.2</version>
+        </dependency>
+
         <!-- 添加JNA依赖jar包 -->
         <dependency>
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna</artifactId>
         </dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.2.56</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
